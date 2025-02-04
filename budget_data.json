@@ -1,0 +1,24 @@
+{
+    "transactions": [
+        {
+            "amount": 47500.0,
+            "category": "Salary",
+            "type": "income"
+        },
+        {
+            "amount": 9600.0,
+            "category": "Rent",
+            "type": "expense"
+        },
+        {
+            "amount": 11500.0,
+            "category": "EMI",
+            "type": "expense"
+        },
+        {
+            "amount": 6600.0,
+            "category": "EMI",
+            "type": "expense"
+        }
+    ]
+}
