@@ -17,6 +17,8 @@ def load_target_date():
 
 def ask_for_date():
     date_str = simpledialog.askstring("Target Date", "Enter target date (YYYY-MM-DD):")
+    if date_str is None:
+        return target_date  # User cancelled
     try:
         datetime.strptime(date_str, "%Y-%m-%d")
         save_target_date(date_str)
@@ -28,7 +30,7 @@ def ask_for_date():
 def update_countdown():
     today = datetime.now().date()
     try:
-        target = datetime.strptime(target_date, "%Y-%m-%d").date()
+        target = datetime.strptime(target_date[0], "%Y-%m-%d").date()
         days_left = (target - today).days
         if days_left >= 0:
             label.config(text=f"{days_left} day(s)\nremaining")
@@ -40,6 +42,18 @@ def update_countdown():
 
 def close_app():
     root.destroy()
+
+def open_menu(event):
+    try:
+        menu.tk_popup(event.x_root, event.y_root)
+    finally:
+        menu.grab_release()
+
+def change_target_date():
+    new_date = ask_for_date()
+    if new_date:
+        target_date[0] = new_date
+        update_countdown()
 
 # Tkinter UI setup
 root = tk.Tk()
@@ -62,10 +76,19 @@ label.pack(expand=True, fill='both')
 close_btn = tk.Button(root, text="X", command=close_app, bg="red", fg="white", bd=0, font=("Arial", 10, "bold"))
 close_btn.place(x=175, y=0, width=25, height=25)
 
-# Load or set date
-target_date = load_target_date()
-if not target_date:
-    target_date = ask_for_date()
+# Dropdown menu button (≡)
+menu_btn = tk.Button(root, text="≡", bg="gray", fg="white", bd=0, font=("Arial", 10, "bold"))
+menu_btn.place(x=150, y=0, width=25, height=25)
+menu_btn.bind("<Button-1>", open_menu)
+
+# Create popup menu
+menu = tk.Menu(root, tearoff=0)
+menu.add_command(label="Update Target Date", command=change_target_date)
+
+# Load or set date (wrapped in list to make mutable in nested func)
+target_date = [load_target_date()]
+if not target_date[0]:
+    target_date[0] = ask_for_date()
 
 update_countdown()
 root.mainloop()
